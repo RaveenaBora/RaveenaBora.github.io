@@ -1,0 +1,147 @@
+<html>
+<head>
+    <title>Joke App</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            /* Add a bounce animation to the logo */
+            animation-name: bounce;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+        .button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            /* Add a fade-in animation to the button */
+            animation-name: fade-in;
+            animation-duration: 2s;
+            animation-fill-mode: forwards;
+        }
+        .joke {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .setup {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .delivery {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* Define the bounce keyframes */
+        @keyframes bounce {
+          0%, 100% {
+              transform: translateY(0);
+          }
+          50% {
+              transform: translateY(-10px);
+          }
+        }
+
+        /* Define the fade-in keyframes */
+        @keyframes fade-in {
+          from {
+              opacity: 0;
+          }
+          to {
+              opacity: 1;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Joke App</div>
+            <button class="button" id="get-joke">Get another Joke</button>
+        </div>
+        <div class="joke" id="joke">
+            
+        </div>
+    </div>
+<script>
+        // Get the elements
+        const getJokeButton = document.getElementById("get-joke");
+        const jokeElement = document.getElementById("joke");
+
+        // Define the API URL
+        const apiUrl = "https://jokeapi-v2.p.rapidapi.com/joke/Any";
+
+        // Define the API headers
+        const apiHeaders = {
+            "x-rapidapi-host": "jokeapi-v2.p.rapidapi.com",
+            "x-rapidapi-key": "feabf2d633msh5c14f92e1b7b885p186e52jsnb12e6dec26cc"
+        };
+
+        // Define a function to fetch a joke from the API
+        async function fetchJoke() {
+            try {
+                // Make a GET request to the API
+                const response = await fetch(apiUrl, {
+                    method: "GET",
+                    headers: apiHeaders
+                });
+
+                // Check if the response is OK
+                if (response.ok) {
+                    // Parse the response as JSON
+                    const data = await response.json();
+
+                    // Check if the joke is a single or a two-part joke
+                    if (data.type === "single") {
+                        // Display the joke as a single line
+                        jokeElement.innerHTML = `<p>${data.joke}</p>`;
+                    } else if (data.type === "twopart") {
+                        // Display the joke as a setup and a delivery
+                        jokeElement.innerHTML = `
+                            <p class="setup">${data.setup}</p>
+                            <p class="delivery">${data.delivery}</p>
+                        `;
+                    } else {
+                        // Display an error message
+                        jokeElement.innerHTML = `<p>Sorry, something went wrong.</p>`;
+                    }
+                } else {
+                    // Display an error message
+                    jokeElement.innerHTML = `<p>Sorry, something went wrong.</p>`;
+                }
+            } catch (error) {
+                // Display an error message
+                jokeElement.innerHTML = `<p>Sorry, something went wrong.</p>`;
+                console.error(error);
+            }
+        }
+
+        // Add an event listener to the button to fetch a joke when clicked
+        getJokeButton.addEventListener("click", fetchJoke);
+
+        // Call the fetchJoke function when the page loads
+        fetchJoke();
+    </script>
+</body>
+</html>
